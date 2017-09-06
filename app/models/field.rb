@@ -4,6 +4,7 @@ class Field < ApplicationRecord
 
   validates :name, presence: true
   validates :shape, presence: true
+  validate :geometry
 
   def area
     RGeo::Geos.factory(:srid => 4326).parse_wkt(self.shape.to_s).area
@@ -14,7 +15,11 @@ class Field < ApplicationRecord
   end
 
   def geo_json=(geo_json)
-    self.shape = RGeo::GeoJSON.decode(JSON.parse(geo_json), json_parser: :json).geometry
+    if geo_json == ''
+      return nil
+    elsif RGeo::GeoJSON.decode(JSON.parse(geo_json), json_parser: :json).present?
+      self.shape = RGeo::GeoJSON.decode(JSON.parse(geo_json), json_parser: :json).geometry
+    end
   end
 
   def geo_json_with_props
@@ -26,6 +31,13 @@ class Field < ApplicationRecord
   def self.shapes
     all.map do |field|
       field.geo_json_with_props
+    end
+  end
+
+  private
+  def geometry
+    unless RGeo::GeoJSON.encode(self.shape).present?
+      self.errors.add(:shape, 'is invalid')
     end
   end
 end
