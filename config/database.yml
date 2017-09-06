@@ -1,0 +1,18 @@
+default: &default
+  adapter: postgis
+  encoding: unicode
+  schema_search_path: public
+  postgis_extension: postgis
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+development:
+  <<: *default
+  database: cropio-test_development
+test:
+  <<: *default
+  database: cropio-test_test
+production:
+  <<: *default
+  database: cropio-test_production
+  username: cropio-test
+  password: <%= ENV['CROPIO-TEST_DATABASE_PASSWORD'] %>

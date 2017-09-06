@@ -1,0 +1,15 @@
+.container-fluid
+  h3.test-center New field
+  - if @field.errors.any?
+    - @field.errors.full_messages.each do |message|
+      p= message
+
+  .row
+    .col-md-2
+      = render 'form', action: 'create'
+
+    .col-md-10
+      #map
+
+  javascript:
+    leafletApp.newShape();

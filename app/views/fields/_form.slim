@@ -1,0 +1,5 @@
+= form_for @field do |f|
+  = f.text_field :name, class: 'form-control', placeholder: 'Name'
+  = f.text_field :geo_json, class: 'form-control', id: 'field_geo_json',
+                            placeholder: 'Shape', type: 'hidden'
+  = f.submit 'Save', class: 'btn btn-primary', id: "#{action}_field", style: 'width: 100%'

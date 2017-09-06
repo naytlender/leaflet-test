@@ -1,0 +1,18 @@
+.container-fluid
+  h3.text-center= @field.name
+
+  .row
+    .col-md-2
+      ul.list-group
+        = link_to edit_field_path do
+          li.list-group-item Edit
+        = link_to @field, method: :delete do
+          li.list-group-item Delete
+        = link_to :back do
+          li.list-group-item Back
+
+    .col-md-10
+      #map
+
+javascript:
+  leafletApp.showMap();

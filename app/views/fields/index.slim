@@ -1,0 +1,23 @@
+.container-fluid
+  h4.text-center All fields
+  .table-responsive
+    table.table
+      thead
+        tr
+          th Name
+          th Area
+          th Shape
+          th colspan='2'
+      tbody
+        - @fields.each do |field|
+          tr
+            td= link_to field.name, field
+            td= field.area
+            td= field.shape
+            td= link_to 'Edit', edit_field_path(field)
+            td= link_to 'Delete', field, method: :delete
+
+  #map
+
+  javascript:
+    leafletApp.indexPage();
