@@ -12,6 +12,7 @@ class FieldTest < ActiveSupport::TestCase
     }
     shape = RGeo::GeoJSON.decode(geo_hash, json_parser: :json)
     field = Field.new
+    field.name = 'random_field'
     field.shape = shape
 
     assert_equal(shape.invalid_reason, 'Self-intersection[0 0 0]')
