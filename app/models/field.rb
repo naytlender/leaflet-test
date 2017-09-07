@@ -1,13 +1,16 @@
+# frozen_string_literal: true
+
+# Field class
 class Field < ApplicationRecord
   require 'rgeo/geo_json'
-  PROPS_FOR_JSON = %i(id name)
+  PROPS_FOR_JSON = %i[id name].freeze
 
   validates :name, presence: true
   validates :shape, presence: true
   validate :geometry
 
   def area
-    RGeo::Geos.factory(:srid => 4326).parse_wkt(self.shape.to_s).area
+    RGeo::Geos.factory(srid: 4326).parse_wkt(shape.to_s).area
   end
 
   def geo_json
@@ -15,29 +18,28 @@ class Field < ApplicationRecord
   end
 
   def geo_json=(geo_json)
-    if geo_json == ''
-      return nil
-    elsif RGeo::GeoJSON.decode(JSON.parse(geo_json), json_parser: :json).present?
-      self.shape = RGeo::GeoJSON.decode(JSON.parse(geo_json), json_parser: :json).geometry
-    end
+    return if geo_json == ''
+    hash = JSON.parse(geo_json)
+    self.shape = RGeo::GeoJSON.decode(hash, json_parser: :json)&.geometry
   end
 
   def geo_json_with_props
     geo_json.tap do |gj|
-      gj[:properties] = PROPS_FOR_JSON.map{|attr| [attr, send(attr)]}.to_h
+      gj[:properties] = PROPS_FOR_JSON.map { |attr| [attr, send(attr)] }.to_h
     end
   end
 
   def self.shapes
-    all.map do |field|
-      field.geo_json_with_props
-    end
+    all.map(&:geo_json_with_props)
   end
 
   private
+
   def geometry
-    unless RGeo::GeoJSON.encode(self.shape).present?
-      self.errors.add(:shape, 'is invalid')
+    if shape.nil?
+      errors.add(:shape, 'is invalid: Areas should not cross.')
+    elsif !shape.valid?
+      errors.add(:shape, 'is invalid: ' + shape.invalid_reason)
     end
   end
 end

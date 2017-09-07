@@ -1,9 +1,12 @@
+# frozen_string_literal: true
+
+# Fields controller
 class FieldsController < ApplicationController
-  before_action :set_field, only: [:show, :edit, :update, :destroy]
+  before_action :set_field, only: %i[show edit update destroy]
 
   def index
     @fields = Field.all
-    gon.field_shapes = @fields.map(&:geo_json_with_props)
+    gon.field_shapes = Field.shapes
   end
 
   def show
@@ -41,6 +44,7 @@ class FieldsController < ApplicationController
   end
 
   private
+
   def field_params
     params.fetch(:field).permit(:name, :geo_json)
   end

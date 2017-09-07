@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'boot'
 
 require 'rails/all'
@@ -7,7 +9,8 @@ require 'rails/all'
 Bundler.require(*Rails.groups)
 
 module CropioTest
+  # application config
   class Application < Rails::Application
-     config.assets.paths << Rails.root.join('node_modules')
+    config.assets.paths << Rails.root.join('node_modules')
   end
 end

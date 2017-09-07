@@ -6,3 +6,8 @@
 .leaflet-draw-toolbar a {
     background-image: image_url('spritesheet.png');
 }
+
+.leaflet-retina .leaflet-draw-toolbar a {
+    background-image: image_url('spritesheet-2x.png');
+    background-image: linear-gradient(transparent, transparent), image_url('spritesheet.svg');
+}
